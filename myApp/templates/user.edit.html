@@ -1,0 +1,30 @@
+{% extends 'base.admin.html' %} {% block title %}Edit User{% endblock %} {% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Edit User</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" id="username" class="form-control" value="{{ user.username }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="text" name="phone" id="phone" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select name="role" id="role" class="form-select" required>
+                <option value="admin" {% if user.is_superuser %}selected{% endif %}>Admin</option>
+                <option value="staff" {% if user.is_staff and not user.is_superuser %}selected{% endif %}>Staff</option>
+                <option value="user" {% if not user.is_staff and not user.is_superuser %}selected{% endif %}>User</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'users' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends base_template %} {% block title %}Create Booking{% endblock %} {% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-primary">Create New Booking</h2>
+
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %} {% if not user.is_authenticated %}
+        <div class="mb-3">
+            <label class="form-label">Your Name</label>
+            <input type="text" name="customer_name" class="form-control" required>
+            <div class="invalid-feedback">Please provide your name.</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Your Email</label>
+            <input type="email" name="customer_email" class="form-control" required>
+            <div class="invalid-feedback">Please provide a valid email.</div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            Booking as: <strong>{{ user.username }}</strong> ({{ user.email }})
+        </div>
+        {% endif %}
+
+        <!-- Dates & Guests -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Check-in</label>
+                <input type="date" name="check_in" class="form-control" required>
+                <div class="invalid-feedback">Select a check-in date.</div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Check-out</label>
+                <input type="date" name="check_out" class="form-control" required>
+                <div class="invalid-feedback">Select a check-out date.</div>
+            </div>
+        </div>
+
+        <!-- <div class="mb-3">
+      <label class="form-label">Guests (Pax)</label>
+      <input type="number" name="guests" class="form-control" value="1" min="1" required>
+    </div> -->
+
+        <h5 class="text-secondary mt-4">Optional Add-ons</h5>
+
+        <!-- Activities -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#activities-section">
+            <label class="form-check-label">Include Activities</label>
+        </div>
+        <div id="activities-section" class="d-none border rounded p-3 mb-3">
+            <label class="form-label">Activities</label>
+            <select name="activities" class="form-select" multiple>
+        {% for activity in activities %}
+        <option value="{{ activity.id }}" data-price="{{ activity.price }}">
+          {{ activity.name }} - Ksh {{ activity.price_per_person }}
+        </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="activities_pax" class="form-control" min="1" value="1">
+        </div>
+
+        <!-- Packages -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#packages-section">
+            <label class="form-check-label">Include Packages</label>
+        </div>
+        <div id="packages-section" class="d-none border rounded p-3 mb-3">
+            <label class="form-label">Packages</label>
+            <select name="packages" class="form-select" multiple>
+        {% for package in packages %}
+        <option value="{{ package.id }}" data-price="{{ package.price }}">
+          {{ package.name }} - Ksh {{ package.price }}
+        </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="packages_pax" class="form-control" min="1" value="1">
+        </div>
+
+        <!-- Rooms (CHECKBOX VERSION) -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#rooms-section">
+            <label class="form-check-label">Include Rooms</label>
+        </div>
+        <div id="rooms-section" class="d-none border rounded p-3 mb-3">
+            <label class="form-label">Rooms</label>
+            <div>
+                {% for room in rooms %}
+                <div class="form-check">
+                    <input class="form-check-input room-checkbox" type="checkbox" name="rooms" value="{{ room.id }}" data-price="{{ room.price }}" id="room-{{ room.id }}">
+                    <label class="form-check-label" for="room-{{ room.id }}">
+            {{ room.name }} - Ksh {{ room.price }}
+          </label>
+                </div>
+                {% endfor %}
+            </div>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="rooms_pax" class="form-control" min="1" value="1">
+        </div>
+
+        <!-- Food -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#food-section">
+            <label class="form-check-label">Include Food</label>
+        </div>
+        <div id="food-section" class="d-none border rounded p-3 mb-3">
+            <label class="form-label">Food</label>
+            <select name="food" class="form-select" multiple>
+        {% for f in food %}
+        <option value="{{ f.id }}" data-price="{{ f.price }}">
+          {{ f.name }} - Ksh {{ f.price }}
+        </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="food_pax" class="form-control" min="1" value="1">
+        </div>
+
+        <!-- Tours -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#tours-section">
+            <label class="form-check-label">Include Tours</label>
+        </div>
+        <div id="tours-section" class="d-none border rounded p-3 mb-3">
+            <label class="form-label">Tours</label>
+            <select name="tours" class="form-select" multiple>
+        {% for tour in tours %}
+        <option value="{{ tour.id }}" data-price="{{ tour.price }}">
+          {{ tour.name }} - Ksh {{ tour.price }}
+        </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="tours_pax" class="form-control" min="1" value="1">
+        </div>
+
+        <!-- Total -->
+        <div class="mt-4 border-top pt-3">
+            <label class="form-label fw-bold text-primary">Total Amount</label>
+            <div id="total-amount" class="fs-5 text-success">Ksh 0.00</div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-3">Create Booking</button>
+
+        <a href="{% url 'booking_list' %}" class="btn btn-danger w-100 mt-3">Cancel Booking</a>
+    </form>
+</div>
+
+<script>
+    document.querySelectorAll('.toggle-section').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const target = document.querySelector(cb.dataset.target);
+            cb.checked ? target.classList.remove('d-none') : target.classList.add('d-none');
+            updateTotal();
+        });
+    });
+
+    const totalAmountDisplay = document.getElementById('total-amount');
+    const getSelectedOptions = (selector) => {
+        const select = document.querySelector(selector);
+        return select ? Array.from(select.selectedOptions) : [];
+    };
+
+    function updateTotal() {
+        const guests = parseInt(document.querySelector('[name="guests"]').value) || 1;
+        let total = 0;
+
+        // Activities
+        if (!document.getElementById('activities-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="activities_pax"]').value) || 1;
+            getSelectedOptions('[name="activities"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        // Packages
+        if (!document.getElementById('packages-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="packages_pax"]').value) || 1;
+            getSelectedOptions('[name="packages"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        // Rooms (checkboxes)
+        if (!document.getElementById('rooms-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="rooms_pax"]').value) || 1;
+            document.querySelectorAll('.room-checkbox:checked').forEach(cb => {
+                total += parseFloat(cb.dataset.price) * pax * guests;
+            });
+        }
+
+        // Food
+        if (!document.getElementById('food-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="food_pax"]').value) || 1;
+            getSelectedOptions('[name="food"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        // Tours
+        if (!document.getElementById('tours-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="tours_pax"]').value) || 1;
+            getSelectedOptions('[name="tours"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        totalAmountDisplay.textContent = `Ksh ${total.toLocaleString()}`;
+    }
+
+    document.querySelectorAll('select, input').forEach(el => {
+        el.addEventListener('input', updateTotal);
+    });
+
+    updateTotal();
+</script>
+{% endblock %}

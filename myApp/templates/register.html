@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% load static %} {% block title %}Register - EpicTrail Adventures{% endblock %} {% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm mt-5">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Create an Account</h3>
+                <form method="post" action="{% url 'register' %}">
+                    {% csrf_token %} {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Please correct the errors below.
+                    </div>
+                    {% endif %}
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Username</label>
+                        <input type="text" name="username" id="id_username" class="form-control" required>
+                    </div>
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" name="email" id="id_email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label">Phone Number</label>
+                        <input type="tel" name="phone" id="id_phone" class="form-control" placeholder="+254 7XXXXXXXX" pattern="^\+?\d{10,15}$" required>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="id_password1" class="form-label">Password</label>
+                        <input type="password" name="password1" id="id_password1" class="form-control" required>
+                    </div>
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label for="id_password2" class="form-label">Confirm Password</label>
+                        <input type="password" name="password2" id="id_password2" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+                <p class="mt-3 text-center">
+                    Already have an account? <a href="{% url 'login' %}">Login here</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

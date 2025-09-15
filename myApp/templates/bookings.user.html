@@ -1,0 +1,91 @@
+{% extends base_template %} {% block title %}My Bookings{% endblock %} {% block content %}
+<div class="container mt-4">
+
+    <!-- Header + New Booking Link -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">My Bookings</h2>
+        <a href="{% url 'create_booking' %}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> New Booking
+        </a>
+    </div>
+
+    {% if bookings %}
+    <div class="row">
+        {% for booking in bookings %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="card-title text-primary">
+                            Booking #{{ booking.id }}
+                        </h5>
+                        <!-- Total Cost Badge -->
+                        <!-- <span class="badge bg-success fs-6">Ksh {{ booking.total_cost|default:"0.00" }}</span> -->
+                        <span class="badge bg-success fs-6">Ksh {{ booking.amount_required|default:"0.00" }}</span>
+                    </div>
+
+                    <p class="card-text mb-2">
+                        <strong>Check-in:</strong> {{ booking.check_in|date:"M d, Y" }}<br>
+                        <strong>Check-out:</strong> {{ booking.check_out|date:"M d, Y" }}<br>
+                        <strong>Booked On:</strong> {{ booking.created_at|date:"M d, Y H:i" }}
+                    </p>
+
+                    <!-- Selected Services -->
+                    {% if booking.activities.all %}
+                    <p class="mb-1"><strong>Activities:</strong></p>
+                    <ul class="small">
+                        {% for a in booking.activities.all %}
+                        <li>{{ a.name }} – Ksh {{ a.price_per_person }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} {% if booking.packages.all %}
+                    <p class="mb-1"><strong>Packages:</strong></p>
+                    <ul class="small">
+                        {% for p in booking.packages.all %}
+                        <li>{{ p.name }} – Ksh {{ p.price_per_person }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} {% if booking.rooms.all %}
+                    <p class="mb-1"><strong>Rooms:</strong></p>
+                    <ul class="small">
+                        {% for r in booking.rooms.all %}
+                        <li>{{ r.name }} – Ksh {{ r.price }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} {% if booking.food.all %}
+                    <p class="mb-1"><strong>Food:</strong></p>
+                    <ul class="small">
+                        {% for f in booking.food.all %}
+                        <li>{{ f.name }} – Ksh {{ f.price }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} {% if booking.tours.all %}
+                    <p class="mb-1"><strong>Tours:</strong></p>
+                    <ul class="small">
+                        {% for t in booking.tours.all %}
+                        <li>{{ t.name }} – Ksh {{ t.price }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer text-end">
+                    {% if booking.id in editable_ids %}
+                    <a href="{% url 'edit_booking' booking.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'delete_booking' booking.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this booking?')">Delete</a> {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- Display total -->
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-calendar-check me-2"></i> Total Payable: Ksh {{ user_total_amount|floatformat:2 }}
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted">You have no bookings yet.
+        <a href="{% url 'create_booking' %}" class="text-success fw-bold">Create your first booking</a>.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

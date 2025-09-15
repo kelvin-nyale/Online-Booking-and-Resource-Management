@@ -1,0 +1,22 @@
+{% extends 'base.admin.html' %} {% block title %}Edit Activity{% endblock %} {% block content %}
+<div class="container">
+    <h2>Edit Activity</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" value="{{ activity.name }}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control">{{ activity.description }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Price (per person)</label>
+            <input type="number" name="price_per_person" value="{{ activity.price_per_person }}" class="form-control" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'activity_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

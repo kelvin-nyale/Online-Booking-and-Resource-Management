@@ -1,0 +1,43 @@
+{% extends 'base.admin.html' %} {% block title %}Rooms{% endblock %} {% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Rooms</h2>
+    <a href="{% url 'add_room' %}" class="btn btn-primary">+ Add Room</a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Capacity</th>
+            <th>Price</th>
+            <th>Total Rooms</th>
+            <th>Available Now</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for room in rooms %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ room.name }}</td>
+            <td>{{ room.capacity }}</td>
+            <td>Ksh {{ room.price_per_night }}</td>
+            <td>{{ room.total_rooms }}</td>
+            <td>
+                {% if room.available_rooms > 0 %}
+                <span class="badge bg-success">{{ room.available_rooms }}</span> {% else %}
+                <span class="badge bg-danger">Fully Booked</span> {% endif %}
+            </td>
+            <td>
+                {% if room.available_rooms > 0 %}
+                <a href="{% url 'book_room' room.id %}" class="btn btn-success btn-sm">Book</a> {% endif %}
+                <a href="{% url 'edit_room' room.id %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                <a href="{% url 'delete_room' room.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this room {{ room.name }}?')">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

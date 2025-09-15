@@ -1,0 +1,72 @@
+{% extends 'base.user.html' %} {% block title %}User Dashboard{% endblock %} {% block content %}
+<!-- <h1 class="mb-4">Welcome, {{ user.username }}!</h1> -->
+
+<!-- Overview Cards -->
+<div class="row mb-4">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>My Bookings</h5>
+                <h2>3</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>Available Services</h5>
+                <h2>10</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>Notifications</h5>
+                <h2>2</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Bookings Table -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-success text-white">
+        Recent Bookings
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Zipline Adventure</td>
+                    <td>2025-09-15</td>
+                    <td><span class="badge bg-success">Confirmed</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Kayaking</td>
+                    <td>2025-09-20</td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="#" class="btn btn-success mt-3">View All Bookings</a>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="d-flex gap-3">
+    <a href="#" class="btn btn-outline-success">Book a Service</a>
+    <a href="#" class="btn btn-outline-primary">View Available Services</a>
+    <a href="#" class="btn btn-outline-dark">Edit Profile</a>
+</div>
+{% endblock %}

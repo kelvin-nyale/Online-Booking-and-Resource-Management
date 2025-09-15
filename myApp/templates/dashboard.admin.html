@@ -1,0 +1,89 @@
+{% extends 'base.admin.html' %} {% block title %}Admin Dashboard{% endblock %} {% block content %}
+<h1 class="mb-4">Welcome, <strong>{{user.username}}</strong>!</h1>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-dark shadow-sm">
+            <div class="card-body text-center">
+                <h5>Total Users</h5>
+                <h2><strong><i class="fas fa-users me-2"></i> {{ total_users }}</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-secondary shadow-sm">
+            <div class="card-body text-center">
+                <h5>Bookings</h5>
+                <h2><strong><i class="fas fa-calendar-check me-2"></i> {{ total_bookings }}</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-primary shadow-sm">
+            <div class="card-body text-center">
+                <h5>Revenue</h5>
+                <h2><strong><i class="fas fa-coins me-2"></i>{{ total_amount }}</strong></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success shadow-sm">
+            <div class="card-body text-center">
+                <h5>Pending Approvals</h5>
+                <h2>15</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Management Table -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-dark text-white">
+        Recent User Registrations
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>jdoe</td>
+                    <td>jdoe@example.com</td>
+                    <td>Staff</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>asmith</td>
+                    <td>asmith@example.com</td>
+                    <td>User</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{% url 'users' %}" class="btn btn-dark mt-3">Manage All Users</a>
+    </div>
+</div>
+
+<!-- System Actions -->
+<div class="d-flex gap-3">
+    <a href="#" class="btn btn-outline-dark">System Settings</a>
+    <a href="#" class="btn btn-outline-success">View Reports</a>
+    <a href="#" class="btn btn-outline-primary">Backup Data</a>
+</div>
+{% endblock %}

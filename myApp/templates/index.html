@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% load static %} {% block title %}EpicTrail Adventures{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section class="hero text-center text-light d-flex flex-column justify-content-center align-items-center">
+    <h1 class="display-4 mb-3">Discover Your Next Adventure</h1>
+    <h3 class="typed-text mb-4"></h3>
+
+    <!-- Search Form -->
+    <form class="search-form mt-3" action="" method="get">
+        <div class="input-group w-75 mx-auto">
+            <input type="text" class="form-control" name="q" placeholder="Search activities or resources...">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+</section>
+
+<!-- Featured Adventures -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">Featured Adventures</h2>
+    <div class="row g-4">
+        <!-- Example Resource Card -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="{% static 'images/kayaking.jpg' %}" class="card-img-top" alt="Kayaking">
+                <div class="card-body">
+                    <h5 class="card-title">Kayaking</h5>
+                    <p class="card-text">Explore scenic waterways with professional guides.</p>
+                    <a href="" class="btn btn-primary w-100">Book Now</a>
+                </div>
+            </div>
+        </div>
+        <!-- Repeat for other featured items -->
+    </div>
+</section>
+{% endblock %} {% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        new Typed('.typed-text', {
+            strings: ["Kayaking", "Rock Climbing", "Camping", "Zip Lining"],
+            typeSpeed: 60,
+            backSpeed: 40,
+            backDelay: 2000,
+            loop: true
+        });
+    });
+</script>
+{% endblock %}

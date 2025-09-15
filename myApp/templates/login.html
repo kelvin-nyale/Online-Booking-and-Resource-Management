@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% load static %} {% block title %}Login - EpicTrail Adventures{% endblock %} {% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm mt-5">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Login</h3>
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %} {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                    <div class="mb-3">
+                        <label for="identifier" class="form-label">Username or Email</label>
+                        <input type="text" name="identifier" id="identifier" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+
+                <p class="mt-3 text-center">
+                    Don’t have an account? <a href="{% url 'register' %}">Register now</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

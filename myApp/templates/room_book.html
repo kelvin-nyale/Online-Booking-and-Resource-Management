@@ -1,0 +1,97 @@
+{% extends 'base.admin.html' %} {% block title %}Book Room{% endblock %} {% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="mb-2 text-primary">Room Name: {{ room.name }}</h2>
+
+    <!-- Room Type Display -->
+    <div class="alert alert-secondary mb-4">
+        <strong>Room Type:</strong> {{ room.room_type.name }}
+    </div>
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %} {% if user.is_authenticated %}
+        <!-- Logged-in User Details -->
+        <div class="mb-3">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-control" value="{{ user.username }}" readonly>
+            <input type="hidden" name="customer_name" value="{{ user.username }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Your Email</label>
+            <input type="email" class="form-control" value="{{ user.email }}" readonly>
+            <input type="hidden" name="customer_email" value="{{ user.email }}">
+        </div>
+        {% else %}
+        <!-- Guest Details -->
+        <div class="mb-3">
+            <label for="id_customer_name" class="form-label">Your Name</label>
+            <input type="text" id="id_customer_name" name="customer_name" class="form-control" placeholder="Enter your full name" required>
+            <div class="invalid-feedback">Please enter your name.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_customer_email" class="form-label">Your Email</label>
+            <input type="email" id="id_customer_email" name="customer_email" class="form-control" placeholder="Enter your email" required>
+            <div class="invalid-feedback">Please provide a valid email address.</div>
+        </div>
+        {% endif %}
+
+        <!-- Check-in Date -->
+        <div class="mb-3">
+            <label for="id_check_in" class="form-label">Check-in</label>
+            <input type="date" id="id_check_in" name="check_in" class="form-control" required>
+            <div class="invalid-feedback">Please select a check-in date.</div>
+        </div>
+
+        <!-- Check-out Date -->
+        <div class="mb-3">
+            <label for="id_check_out" class="form-label">Check-out</label>
+            <input type="date" id="id_check_out" name="check_out" class="form-control" required>
+            <div class="invalid-feedback">Please select a check-out date.</div>
+        </div>
+
+        <!-- Guests -->
+        <div class="mb-3">
+            <label for="id_guests" class="form-label">Number of Guests</label>
+            <input type="number" id="id_guests" name="guests" class="form-control" placeholder="e.g., 2" min="1" max="{{ room.capacity }}" required>
+            <div class="invalid-feedback">
+                Please enter the number of guests (up to {{ room.capacity }}).
+            </div>
+        </div>
+
+        <!-- Pax -->
+        <div class="mb-3">
+            <label for="id_pax" class="form-label">Number of Rooms</label>
+            <input type="number" id="id_guests" name="guests" class="form-control" placeholder="e.g., 2" min="1" max="{{ room.capacity }}" required>
+            <div class="invalid-feedback">
+                Please enter the number of rooms.
+            </div>
+        </div>
+
+        <!-- Available Rooms -->
+        <div class="alert alert-info mb-3">
+            Available rooms for this type: <strong>{{ room.total_rooms }}</strong>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success w-100">Confirm Booking</button>
+        <a href="{% url 'list_rooms' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    </form>
+</div>
+
+<!-- Bootstrap Validation Script -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

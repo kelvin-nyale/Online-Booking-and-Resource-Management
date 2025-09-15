@@ -1,0 +1,75 @@
+{% extends 'base.staff.html' %} {% block title %}Staff Dashboard{% endblock %} {% block content %}
+<h1 class="mb-4">Welcome, <strong>{{user.username}}</strong>!</h1>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>Upcoming Events</h5>
+                <h2>8</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>Bookings to Approve</h5>
+                <h2>12</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5>Assigned Resources</h5>
+                <h2>5</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Requests Table -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        Pending Booking Requests
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Customer</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Jane Doe</td>
+                    <td>Zipline Adventure</td>
+                    <td>2025-09-15</td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Mike Ross</td>
+                    <td>Kayaking</td>
+                    <td>2025-09-20</td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="#" class="btn btn-primary mt-3">Manage Bookings</a>
+    </div>
+</div>
+
+<!-- Quick Links -->
+<div class="d-flex gap-3">
+    <a href="#" class="btn btn-outline-primary">Allocate Resources</a>
+    <a href="#" class="btn btn-outline-success">Submit Report</a>
+    <a href="#" class="btn btn-outline-dark">View Schedule</a>
+</div>
+{% endblock %}

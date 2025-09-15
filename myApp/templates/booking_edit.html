@@ -1,0 +1,220 @@
+{% extends base_template %} {% block title %}Edit Booking{% endblock %} {% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-primary">Edit Booking</h2>
+
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %} {% if not booking.user %}
+        <!-- Guest Booking -->
+        <div class="mb-3">
+            <label class="form-label">Your Name</label>
+            <input type="text" name="customer_name" class="form-control" value="{{ booking.customer_name }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Your Email</label>
+            <input type="email" name="customer_email" class="form-control" value="{{ booking.customer_email }}" required>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            Editing booking for: <strong>{{ booking.user.username }}</strong> ({{ booking.user.email }})
+        </div>
+        {% endif %}
+
+        <!-- Dates -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Check-in</label>
+                <input type="date" name="check_in" class="form-control" value="{{ booking.check_in|date:'Y-m-d' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Check-out</label>
+                <input type="date" name="check_out" class="form-control" value="{{ booking.check_out|date:'Y-m-d' }}" required>
+            </div>
+        </div>
+
+        <!-- Guests -->
+        <div class="mb-3">
+            <label class="form-label">Guests</label>
+            <input type="number" name="guests" class="form-control" value="{{ booking.guests|default:1 }}" min="1" required>
+        </div>
+
+        <h5 class="text-secondary mt-4">Optional Add-ons</h5>
+
+        <!-- Activities -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#activities-section" {% if booking.activities.all %}checked{% endif %}>
+            <label class="form-check-label">Include Activities</label>
+        </div>
+        <div id="activities-section" class="{% if not booking.activities.all %}d-none{% endif %} border rounded p-3 mb-3">
+            <label class="form-label">Activities</label>
+            <select name="activities" class="form-select" multiple>
+        {% for activity in activities %}
+          <option value="{{ activity.id }}" data-price="{{ activity.price_per_person }}"
+            {% if activity in booking.activities.all %}selected{% endif %}>
+            {{ activity.name }} - Ksh {{ activity.price_per_person }}
+          </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="activities_pax" class="form-control" min="1" value="{{ booking.activities_pax|default:1 }}">
+        </div>
+
+        <!-- Packages -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#packages-section" {% if booking.packages.all %}checked{% endif %}>
+            <label class="form-check-label">Include Packages</label>
+        </div>
+        <div id="packages-section" class="{% if not booking.packages.all %}d-none{% endif %} border rounded p-3 mb-3">
+            <label class="form-label">Packages</label>
+            <select name="packages" class="form-select" multiple>
+        {% for package in packages %}
+          <option value="{{ package.id }}" data-price="{{ package.price }}"
+            {% if package in booking.packages.all %}selected{% endif %}>
+            {{ package.name }} - Ksh {{ package.price }}
+          </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="packages_pax" class="form-control" min="1" value="{{ booking.packages_pax|default:1 }}">
+        </div>
+
+        <!-- Rooms -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#rooms-section" {% if booking.rooms.all %}checked{% endif %}>
+            <label class="form-check-label">Include Rooms</label>
+        </div>
+        <div id="rooms-section" class="{% if not booking.rooms.all %}d-none{% endif %} border rounded p-3 mb-3">
+            <label class="form-label">Rooms</label> {% for room in rooms %}
+            <div class="form-check">
+                <input class="form-check-input room-checkbox" type="checkbox" name="rooms" value="{{ room.id }}" data-price="{{ room.price }}" id="room-{{ room.id }}" {% if room in booking.rooms.all %}checked{% endif %}>
+                <label class="form-check-label" for="room-{{ room.id }}">
+            {{ room.name }} - Ksh {{ room.price }}
+          </label>
+            </div>
+            {% endfor %}
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="rooms_pax" class="form-control" min="1" value="{{ booking.rooms_pax|default:1 }}">
+        </div>
+
+        <!-- Food -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#food-section" {% if booking.food.all %}checked{% endif %}>
+            <label class="form-check-label">Include Food</label>
+        </div>
+        <div id="food-section" class="{% if not booking.food.all %}d-none{% endif %} border rounded p-3 mb-3">
+            <label class="form-label">Food</label>
+            <select name="food" class="form-select" multiple>
+        {% for f in food %}
+          <option value="{{ f.id }}" data-price="{{ f.price }}"
+            {% if f in booking.food.all %}selected{% endif %}>
+            {{ f.name }} - Ksh {{ f.price }}
+          </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="food_pax" class="form-control" min="1" value="{{ booking.food_pax|default:1 }}">
+        </div>
+
+        <!-- Tours -->
+        <div class="form-check mb-2">
+            <input class="form-check-input toggle-section" type="checkbox" data-target="#tours-section" {% if booking.tours.all %}checked{% endif %}>
+            <label class="form-check-label">Include Tours</label>
+        </div>
+        <div id="tours-section" class="{% if not booking.tours.all %}d-none{% endif %} border rounded p-3 mb-3">
+            <label class="form-label">Tours</label>
+            <select name="tours" class="form-select" multiple>
+        {% for tour in tours %}
+          <option value="{{ tour.id }}" data-price="{{ tour.price }}"
+            {% if tour in booking.tours.all %}selected{% endif %}>
+            {{ tour.name }} - Ksh {{ tour.price }}
+          </option>
+        {% endfor %}
+      </select>
+            <label class="form-label mt-2">Pax</label>
+            <input type="number" name="tours_pax" class="form-control" min="1" value="{{ booking.tours_pax|default:1 }}">
+        </div>
+
+        <div class="mt-4 border-top pt-3">
+            <label class="form-label fw-bold text-primary">Total Amount</label>
+            <div id="total-amount" class="fs-5 text-success">Ksh 0.00</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3">Save Changes</button>
+        <a href="{% url 'booking_list' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    </form>
+</div>
+
+<script>
+    document.querySelectorAll('.toggle-section').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const target = document.querySelector(cb.dataset.target);
+            cb.checked ? target.classList.remove('d-none') : target.classList.add('d-none');
+            updateTotal();
+        });
+    });
+
+    const totalAmountDisplay = document.getElementById('total-amount');
+    const getSelectedOptions = (selector) => {
+        const select = document.querySelector(selector);
+        return select ? Array.from(select.selectedOptions) : [];
+    };
+
+    function updateTotal() {
+        const guests = parseInt(document.querySelector('[name="guests"]').value) || 1;
+        let total = 0;
+
+        if (!document.getElementById('activities-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="activities_pax"]').value) || 1;
+            getSelectedOptions('[name="activities"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        if (!document.getElementById('packages-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="packages_pax"]').value) || 1;
+            getSelectedOptions('[name="packages"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        if (!document.getElementById('rooms-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="rooms_pax"]').value) || 1;
+            document.querySelectorAll('.room-checkbox:checked').forEach(cb => {
+                total += parseFloat(cb.dataset.price) * pax * guests;
+            });
+        }
+
+        if (!document.getElementById('food-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="food_pax"]').value) || 1;
+            getSelectedOptions('[name="food"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        if (!document.getElementById('tours-section').classList.contains('d-none')) {
+            const pax = parseInt(document.querySelector('[name="tours_pax"]').value) || 1;
+            getSelectedOptions('[name="tours"]').forEach(opt => {
+                total += parseFloat(opt.dataset.price) * pax;
+            });
+        }
+
+        totalAmountDisplay.textContent = `Ksh ${total.toLocaleString()}`;
+    }
+
+    document.querySelectorAll('select, input').forEach(el => {
+        el.addEventListener('input', updateTotal);
+    });
+
+    updateTotal();
+</script>
+{% endblock %}
