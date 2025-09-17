@@ -1,0 +1,52 @@
+{% extends "base.admin.html" %} {% block title %}Notifications{% endblock %} {% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3 text-primary">
+        <i class="fas fa-bell me-2"></i> Notifications
+    </h2>
+
+    <!-- Filter Form -->
+    <form method="get" class="mb-3 d-flex align-items-center">
+        <label class="me-2 fw-bold">Filter:</label>
+        <select name="type" class="form-select form-select-sm w-auto me-3">
+            <option value="">All Types</option>
+            <option value="booking" {% if request.GET.type == 'booking' %}selected{% endif %}>Booking</option>
+            <option value="registration" {% if request.GET.type == 'registration' %}selected{% endif %}>Registration</option>
+        </select>
+
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" name="unread" value="1" {% if request.GET.unread %}checked{% endif %}>
+            <label class="form-check-label">Unread Only</label>
+        </div>
+
+        <button class="btn btn-sm btn-primary ms-3" type="submit">Apply</button>
+    </form>
+
+    <!-- Notifications List -->
+    <ul class="list-group shadow-sm">
+        {% for n in notifications %}
+        <li class="list-group-item d-flex justify-content-between align-items-center 
+                       {% if not n.is_read %}fw-bold bg-light{% endif %}">
+            <span>
+                    {{ n.message }} 
+                    <small class="text-muted">({{ n.created_at|date:"M d, H:i" }})</small>
+                </span> {% if not n.is_read %}
+            <a href="{% url 'mark_notification_read' n.id %}" class="btn btn-sm btn-outline-secondary">
+                        Mark Read
+                    </a> {% endif %}
+        </li>
+        {% empty %}
+        <li class="list-group-item">No notifications yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- WebSocket Real-Time Alert -->
+<script>
+    const socket = new WebSocket("ws://" + window.location.host + "/ws/notifications/");
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        // Optionally enhance this to append notifications dynamically
+        alert("🔔 " + data.message);
+    };
+</script>
+{% endblock %}

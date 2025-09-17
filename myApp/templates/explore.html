@@ -1,0 +1,80 @@
+{% extends base_template %} {% block title %}Explore{% endblock %} {% block content %}
+<div class="container py-5">
+
+    <!-- ACTIVITIES SECTION -->
+    <h2 class="mb-4 text-primary">Activities</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        {% for activity in activities %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if activity.image %}
+                <img src="{{ activity.image.url }}" class="card-img-top" alt="{{ activity.name }}" style="height:200px;object-fit:cover;"> {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height:200px;">
+                    <i class="fas fa-biking fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ activity.name }}</h5>
+                    <p class="card-text">{{ activity.description|truncatewords:20 }}</p>
+                    <p class="text-muted">Price: Ksh {{ activity.price_per_person }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No activities available.</div>
+        {% endfor %}
+    </div>
+
+    <!-- ROOMS SECTION -->
+    <h2 class="mb-4 text-primary">Accommodation</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        {% for room in rooms %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if room.image %}
+                <img src="{{ room.image.url }}" class="card-img-top" alt="{{ room.name }}" style="height:200px;object-fit:cover;"> {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height:200px;">
+                    <i class="fas fa-bed fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ room.name }}</h5>
+                    <p class="card-text"><strong>Type:</strong> {{ room.room_type.name }}</p>
+                    <p class="text-muted">Capacity {{ room.room_type.capacity }}</p>
+                    <p class="text-muted">Price: Ksh {{ room.room_type.price_per_night }}/night</p>
+                    <a href="{% url 'book_room' room.id %}" class="btn btn-success mt-auto">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No rooms available.</div>
+        {% endfor %}
+    </div>
+
+    <!-- TOURS SECTION -->
+    <h2 class="mb-4 text-primary">Tours</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for tour in tours %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if tour.image %}
+                <img src="{{ tour.image.url }}" class="card-img-top" alt="{{ tour.name }}" style="height:200px;object-fit:cover;"> {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height:200px;">
+                    <i class="fas fa-map-marked-alt fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ tour.name }}</h5>
+                    <p class="card-text">{{ tour.description|truncatewords:20 }}</p>
+                    <p class="text-muted">Price: Ksh {{ tour.price }}</p>
+                    <a href="{% url 'book_tour' tour.id %}" class="btn btn-success mt-auto">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No tours available.</div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

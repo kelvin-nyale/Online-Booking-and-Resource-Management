@@ -1,0 +1,195 @@
+{% extends 'base.admin.html' %} {% block title %}Reports & Analytics{% endblock %} {% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
+        <h2>Reports & Analytics</h2>
+        <div>
+            <a href="?export=csv" class="btn btn-secondary me-2">
+                <i class="fas fa-file-csv me-1"></i>Export CSV</a>
+            <a href="?export=pdf" class="btn btn-danger me-2" target="_blank">
+                <i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print me-2"></i>Print</button>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <h6>Total Revenue - Activities</h6>
+                <p class="fs-5 fw-bold">KSh {{ revenue_activities }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <h6>Total Revenue - Packages</h6>
+                <p class="fs-5 fw-bold">KSh {{ revenue_packages }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <h6>Total Revenue - Rooms</h6>
+                <p class="fs-5 fw-bold">KSh {{ revenue_rooms }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <h6>Total Revenue - Tours</h6>
+                <p class="fs-5 fw-bold">KSh {{ revenue_tours }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings & Revenue Overview -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm p-3">
+                <h5 class="text-center mb-3">Bookings & Revenue Overview</h5>
+                <canvas id="barChart" height="120"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm p-3">
+                <h5 class="text-center mb-3">Bookings Distribution</h5>
+                <canvas id="pieChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Lists -->
+    <h4>Top Booked Activities</h4>
+    <ul class="list-group mb-3">
+        {% for a in popular_activities %}
+        <li class="list-group-item d-flex justify-content-between">
+            {{ a.name }}<span class="badge bg-primary">{{ a.num_bookings }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No data.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Top Booked Packages</h4>
+    <ul class="list-group mb-3">
+        {% for p in popular_packages %}
+        <li class="list-group-item d-flex justify-content-between">
+            {{ p.name }}<span class="badge bg-success">{{ p.num_bookings }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No data.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Top Booked Rooms</h4>
+    <ul class="list-group mb-3">
+        {% for r in popular_rooms %}
+        <li class="list-group-item d-flex justify-content-between">
+            {{ r.name }}<span class="badge bg-warning text-dark">{{ r.num_bookings }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No data.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Top Booked Tours</h4>
+    <ul class="list-group mb-3">
+        {% for t in popular_tours %}
+        <li class="list-group-item d-flex justify-content-between">
+            {{ t.name }}<span class="badge bg-info">{{ t.num_bookings }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No data.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{{ months|json_script:"months-data" }} {{ monthly_bookings|json_script:"bookings-data" }} {{ monthly_revenue|json_script:"revenue-data" }} {{ pie_labels|json_script:"pie-labels" }} {{ pie_data|json_script:"pie-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const months = JSON.parse(document.getElementById('months-data').textContent);
+    const bookingsData = JSON.parse(document.getElementById('bookings-data').textContent);
+    const revenueData = JSON.parse(document.getElementById('revenue-data').textContent);
+    const pieLabels = JSON.parse(document.getElementById('pie-labels').textContent);
+    const pieData = JSON.parse(document.getElementById('pie-data').textContent);
+
+    // --- BAR CHART ---
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Bookings',
+                data: bookingsData,
+                backgroundColor: 'rgba(54,162,235,0.6)',
+                borderColor: 'rgba(54,162,235,1)',
+                borderWidth: 1
+            }, {
+                label: 'Revenue (KSh)',
+                data: revenueData,
+                backgroundColor: 'rgba(75,192,192,0.6)',
+                borderColor: 'rgba(75,192,192,1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Monthly Bookings & Revenue'
+                },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        // Format tooltip labels for both datasets
+                        label: function(context) {
+                            if (context.dataset.label === 'Revenue (KSh)') {
+                                return `${context.dataset.label}: KSh ${context.parsed.y.toLocaleString()}`;
+                            } else {
+                                return `${context.dataset.label}: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // --- PIE CHART ---
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: pieLabels,
+            datasets: [{
+                data: pieData,
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Bookings Distribution by Category'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: KSh ${context.parsed.toLocaleString()}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

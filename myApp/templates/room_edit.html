@@ -1,44 +1,31 @@
 {% extends 'base.admin.html' %} {% block title %}Edit Room{% endblock %} {% block content %}
 <div class="card shadow-sm p-4">
     <h2 class="mb-4">Edit Room</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-
-        <!-- Room Name -->
         <div class="mb-3">
-            <label for="id_name" class="form-label">Room Name</label>
-            <input type="text" id="id_name" name="name" class="form-control" value="{{ room.name }}" required>
+            <label class="form-label">Room Name</label>
+            <input type="text" name="name" value="{{ room.name }}" class="form-control" required>
         </div>
 
-        <!-- Description -->
         <div class="mb-3">
-            <label for="id_description" class="form-label">Description</label>
-            <textarea id="id_description" name="description" class="form-control" rows="3">{{ room.description }}</textarea>
+            <label class="form-label">Room Type</label>
+            <select name="room_type" class="form-select" required>
+                {% for rt in room_types %}
+                <option value="{{ rt.id }}" {% if room.room_type.id == rt.id %}selected{% endif %}>
+                    {{ rt.name }}
+                </option>
+                {% endfor %}
+            </select>
         </div>
 
-        <!-- Capacity -->
         <div class="mb-3">
-            <label for="id_capacity" class="form-label">Capacity</label>
-            <input type="number" id="id_capacity" name="capacity" class="form-control" value="{{ room.capacity }}" required>
-        </div>
-
-        <!-- Price per Night -->
-        <div class="mb-3">
-            <label for="id_price" class="form-label">Price per Night</label>
-            <input type="number" step="0.01" id="id_price" name="price_per_night" class="form-control" value="{{ room.price_per_night }}" required>
-        </div>
-
-        <!-- Total Rooms -->
-        <div class="mb-3">
-            <label for="id_total_rooms" class="form-label">Total Rooms</label>
-            <input type="number" id="id_total_rooms" name="total_rooms" class="form-control" value="{{ room.total_rooms }}" required>
-            <small class="text-muted">Number of rooms available for this type.</small>
-        </div>
-
-        <!-- Available Checkbox -->
-        <div class="form-check mb-3">
-            <input type="checkbox" id="id_available" name="available" class="form-check-input" {% if room.available %}checked{% endif %}>
-            <label for="id_available" class="form-check-label">Available</label>
+            <label class="form-label">Room Image</label>
+            <input type="file" name="image" class="form-control"> {% if room.image %}
+            <div class="mt-2">
+                <img src="{{ room.image.url }}" alt="Room Image" style="max-width:150px;">
+            </div>
+            {% endif %}
         </div>
 
         <button type="submit" class="btn btn-primary">Update Room</button>

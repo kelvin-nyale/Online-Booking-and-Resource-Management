@@ -1,44 +1,30 @@
 {% extends 'base.admin.html' %} {% block title %}Add Room{% endblock %} {% block content %}
 <div class="card shadow-sm p-4">
     <h2 class="mb-4">Add Room</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         <!-- Room Name -->
         <div class="mb-3">
             <label for="id_name" class="form-label">Room Name</label>
-            <input type="text" id="id_name" name="name" class="form-control" placeholder="Enter room type name" required>
+            <input type="text" id="id_name" name="name" class="form-control" placeholder="Enter room name" required>
         </div>
 
-        <!-- Description -->
+        <!-- Room Type -->
         <div class="mb-3">
-            <label for="id_description" class="form-label">Description</label>
-            <textarea id="id_description" name="description" class="form-control" rows="3" placeholder="Brief description"></textarea>
+            <label for="room_type" class="form-label">Select Room Type</label>
+            <select id="room_type" name="room_type" class="form-select" required>
+                <option value="">-- Select Room Type --</option>
+                {% for room_type in room_types %}
+                <option value="{{ room_type.id }}">{{ room_type.name }}</option>
+                {% endfor %}
+            </select>
         </div>
 
-        <!-- Capacity -->
+        <!-- Image Upload -->
         <div class="mb-3">
-            <label for="id_capacity" class="form-label">Capacity</label>
-            <input type="number" id="id_capacity" name="capacity" class="form-control" placeholder="e.g., 2" required>
-        </div>
-
-        <!-- Price per Night -->
-        <div class="mb-3">
-            <label for="id_price" class="form-label">Price per Night</label>
-            <input type="number" step="0.01" id="id_price" name="price_per_night" class="form-control" placeholder="e.g., 3500.00" required>
-        </div>
-
-        <!-- Total Rooms -->
-        <div class="mb-3">
-            <label for="id_total_rooms" class="form-label">Total Rooms</label>
-            <input type="number" id="id_total_rooms" name="total_rooms" class="form-control" placeholder="e.g., 5" required>
-            <small class="text-muted">Number of rooms available for this type.</small>
-        </div>
-
-        <!-- Available Checkbox -->
-        <div class="form-check mb-3">
-            <input type="checkbox" id="id_available" name="available" class="form-check-input" checked>
-            <label for="id_available" class="form-check-label">Available</label>
+            <label for="id_image" class="form-label">Upload Image</label>
+            <input type="file" id="id_image" name="image" class="form-control">
         </div>
 
         <button type="submit" class="btn btn-primary">Save Room</button>

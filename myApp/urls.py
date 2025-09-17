@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views  # Import views from the same app
+from .views import notifications_view, mark_notification_read
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name='home'),  # Landing page
@@ -29,14 +32,25 @@ urlpatterns = [
     
     path('rooms/', views.list_rooms, name='list_rooms'),
     path('rooms/add/', views.add_room, name='add_room'),
-    path('rooms/edit/<int:pk>/', views.edit_room, name='edit_room'),
-    path('rooms/delete/<int:pk>/', views.delete_room, name='delete_room'),
+    path('rooms/<int:room_id>/edit/', views.edit_room, name='edit_room'),
+    path('rooms/<int:room_id>/delete/', views.delete_room, name='delete_room'),
     path('rooms/book/<int:pk>/', views.book_room, name='book_room'),
+    
+    path('room-types/', views.room_types, name='room_types'),
+    path('room-type/add/', views.add_room_type, name='add_room_type'),
+    path('room-type/edit/<int:pk>/', views.edit_room_type, name='edit_room_type'),
+    path('room-type/delete/<int:pk>/', views.delete_room_type, name='delete_room_type'),
     
     # Bookings
     path('bookings/', views.booking_list, name='booking_list'),
     path('bookings/edit/<int:pk>/', views.edit_booking, name='edit_booking'),
     path('bookings/delete/<int:pk>/', views.delete_booking, name='delete_booking'),
     path('bookings/new/', views.create_booking, name='create_booking'),
+    
+    path('notifications/', notifications_view, name='notifications'),
+    path('notifications/<int:pk>/read/', mark_notification_read, name='mark_notification_read'),
+    
+    path('explore/', views.explore, name='explore'),
+    path('reports/', views.reports_analytics, name='reports_analytics'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

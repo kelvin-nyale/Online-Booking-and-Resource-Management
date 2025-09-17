@@ -1,20 +1,36 @@
 {% extends 'base.admin.html' %} {% block title %}Edit Activity{% endblock %} {% block content %}
 <div class="container">
-    <h2>Edit Activity</h2>
-    <form method="POST">
+    <h2 class="mb-4">Edit Activity</h2>
+
+    <!-- Add enctype for file upload -->
+    <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
         {% csrf_token %}
+
         <div class="mb-3">
             <label class="form-label">Name</label>
             <input type="text" name="name" value="{{ activity.name }}" class="form-control" required>
         </div>
+
         <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea name="description" class="form-control">{{ activity.description }}</textarea>
+            <textarea name="description" class="form-control" rows="4" required>{{ activity.description }}</textarea>
         </div>
+
         <div class="mb-3">
             <label class="form-label">Price (per person)</label>
             <input type="number" name="price_per_person" value="{{ activity.price_per_person }}" class="form-control" step="0.01" required>
         </div>
+
+        <div class="mb-3">
+            <label class="form-label">Change Image</label>
+            <input type="file" name="image" class="form-control"> {% if activity.image %}
+            <div class="mt-2">
+                <p>Current Image:</p>
+                <img src="{{ activity.image.url }}" alt="Activity Image" class="img-thumbnail" style="max-width: 200px;">
+            </div>
+            {% endif %}
+        </div>
+
         <button type="submit" class="btn btn-primary">Update</button>
         <a href="{% url 'activity_list' %}" class="btn btn-secondary">Cancel</a>
     </form>

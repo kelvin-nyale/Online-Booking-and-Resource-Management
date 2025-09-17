@@ -20,6 +20,7 @@ class Activity(models.Model):
     price_per_person = models.DecimalField(  # Updated field name
         max_digits=8, decimal_places=2, help_text="Price per person"
     )
+    image = models.ImageField(upload_to='room_images/', blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -68,9 +69,8 @@ class RoomType(models.Model):
     
 class Room(models.Model):
     name = models.CharField(max_length=100)
-    # room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
-    # total_rooms = models.PositiveIntegerField()
-    # price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
+    room_type = models.ForeignKey('RoomType', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='room_images/', blank=True, null=True)  # New field
 
     def __str__(self):
         return f"{self.name} {self.room_type}"
@@ -114,30 +114,6 @@ class Tour(models.Model):
         return self.name
 
 
-# class Booking(models.Model):
-#     # Link to the user who made the booking (optional for guests)
-#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-#     # Customer details for non-logged-in users
-#     customer_name = models.CharField(max_length=100, blank=True, null=True)
-#     customer_email = models.EmailField(blank=True, null=True)
-
-#     # Services chosen (all optional, supports combinations)
-#     activities = models.ManyToManyField(Activity, blank=True)
-#     packages = models.ManyToManyField(Package, blank=True)
-#     rooms = models.ManyToManyField(Room, blank=True)
-#     food = models.ManyToManyField(Food, blank=True)
-#     tours = models.ManyToManyField(Tour, blank=True)
-
-#     # Booking details
-#     check_in = models.DateField(blank=True, null=True)
-#     check_out = models.DateField(blank=True, null=True)
-#     guests = models.PositiveIntegerField(default=1)
-
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"Booking #{self.id} - {self.customer_name or self.user.username} - {self.check_in}"
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     customer_name = models.CharField(max_length=100, blank=True, null=True)
@@ -173,7 +149,7 @@ class Booking(models.Model):
         pax = self.guests or 1
 
         # Rooms: price × guests × nights
-        room_cost = sum(room.price_per_night * pax * self.nights_spent for room in self.rooms.all())
+        room_cost = sum(room.room_type.price_per_night * pax * self.nights_spent for room in self.rooms.all())
 
         # Activities, Packages, Food, Tours: price × guests
         activity_cost = sum(a.price_per_person * pax for a in self.activities.all())
@@ -186,6 +162,29 @@ class Booking(models.Model):
     @property
     def balance(self):
         return self.amount_required - self.paid
+    
+    @property
+    def display_customer(self):
+        if self.customer_name:
+            return self.customer_name
+        if self.user:
+            return self.user.username
+        return "Anonymous"
+
 
     def __str__(self):
         return f"Booking #{self.id} - {self.customer_name or self.user.username} - {self.check_in} - {self.amount_required}"
+    
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('booking', 'Booking'),
+        ('registration', 'Registration'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.CharField(max_length=255)
+    type = models.CharField(max_length=50, choices=NOTIFICATION_TYPES, default='booking')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.message} ({'Read' if self.is_read else 'Unread'})"

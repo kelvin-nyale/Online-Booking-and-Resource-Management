@@ -18,7 +18,7 @@
         <tr>
             <th>#</th>
             <th>Activity Name</th>
-            <th>Description</th>
+            <!-- <th>Description</th> -->
             <th>Price (per person)</th>
             <th>Actions</th>
         </tr>
@@ -28,7 +28,7 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ activity.name }}</td>
-            <td>{{ activity.description|truncatechars:50 }}</td>
+            <!-- <td>{{ activity.description|truncatechars:50 }}</td> -->
             <td>Ksh {{ activity.price_per_person }}</td>
             <td>
                 <a href="{% url 'edit_activity' activity.id %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>

@@ -95,16 +95,13 @@
         </div>
         <div id="rooms-section" class="d-none border rounded p-3 mb-3">
             <label class="form-label">Rooms</label>
-            <div>
-                {% for room in rooms %}
-                <div class="form-check">
-                    <input class="form-check-input room-checkbox" type="checkbox" name="rooms" value="{{ room.id }}" data-price="{{ room.price }}" id="room-{{ room.id }}">
-                    <label class="form-check-label" for="room-{{ room.id }}">
-            {{ room.name }} - Ksh {{ room.price }}
-          </label>
-                </div>
-                {% endfor %}
-            </div>
+            <select name="rooms" class="form-select" multiple>
+        {% for room in rooms %}
+        <option value="{{ room.id }}" data-price="{{ room.price_per_night }}">
+          {{ room.name }} - {{ room.room_type.name }} - Ksh {{ room.room_type.price_per_night }}
+        </option>
+        {% endfor %}
+      </select>
             <label class="form-label mt-2">Pax</label>
             <input type="number" name="rooms_pax" class="form-control" min="1" value="1">
         </div>

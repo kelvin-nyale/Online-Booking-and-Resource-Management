@@ -15,8 +15,8 @@ def total_amount(request):
     """
     total = 0
     if request.user.is_authenticated:
-        # Filter bookings for the current user
-        bookings = Booking.objects.filter(user=request.user)
+        # Filter bookings for the all/current user
+        bookings = Booking.objects.all()#filter(user=request.user)
         # Sum the dynamic amount_required property
         total = sum(booking.amount_required for booking in bookings)
     return {'total_amount': total}
