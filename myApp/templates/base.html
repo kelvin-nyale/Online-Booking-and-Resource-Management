@@ -23,7 +23,7 @@
       </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <a href="{% url 'explore' %}" class="btn btn-primary">Explore</a>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="">My Bookings</a></li>
                     <li class="nav-item"><a class="nav-link" href="">Contact</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'create_booking' %}">Book Now</a></li>
@@ -38,8 +38,8 @@
                         </ul>
                     </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                    {% endif %}
+                    <li class="nav-item"><a class="nav-link btn btn-outline-primary" href="{% url 'login' %}">Get Started</a></li>
+                    <a href="{% url 'explore' %}" class="btn btn-outline-primary">Explore</a> {% endif %}
                 </ul>
             </div>
         </div>

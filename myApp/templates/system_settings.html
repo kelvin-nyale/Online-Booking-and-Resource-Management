@@ -1,0 +1,40 @@
+{% extends "base.admin.html" %} {% block title %}System Settings{% endblock %} {% block content %}
+<h2>System Settings</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Site Name</label>
+        <input type="text" name="site_name" value="{{ settings.site_name }}" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Support Email</label>
+        <input type="email" name="support_email" value="{{ settings.support_email }}" class="form-control">
+    </div>
+    <div class="form-check mb-3">
+        <input type="checkbox" name="maintenance_mode" class="form-check-input" {% if settings.maintenance_mode %}checked{% endif %}>
+        <label class="form-check-label">Enable Maintenance Mode</label>
+    </div>
+
+    <!-- Payment Toggles -->
+    <div class="form-check mb-3">
+        <input type="checkbox" name="enable_mpesa" class="form-check-input" {% if settings.enable_mpesa %}checked{% endif %}>
+        <label class="form-check-label">Enable M-Pesa Payments</label>
+    </div>
+    <div class="form-check mb-3">
+        <input type="checkbox" name="enable_stripe" class="form-check-input" {% if settings.enable_stripe %}checked{% endif %}>
+        <label class="form-check-label">Enable Stripe Payments</label>
+    </div>
+
+    <!-- Booking and Discount -->
+    <div class="mb-3">
+        <label>Max Daily Bookings</label>
+        <input type="number" name="max_daily_bookings" value="{{ settings.max_daily_bookings }}" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Discount Rate (%)</label>
+        <input type="number" step="0.01" name="discount_rate" value="{{ settings.discount_rate }}" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Settings</button>
+</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.admin.html" %} {% block title %}Food Items{% endblock %} {% block content %}
+<h2 class="mb-3">Food Items</h2>
+<a href="{% url 'add_food' %}" class="btn btn-dark mb-3">+ Add Food</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Price (KES)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for food in foods %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ food.name }}</td>
+            <td>{{ food.price_per_person }}</td>
+            <td>
+                <a href="{% url 'edit_food' food.id %}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{% url 'delete_food' food.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">No food items found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

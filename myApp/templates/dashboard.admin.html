@@ -54,36 +54,37 @@
                 </tr>
             </thead>
             <tbody>
+                {% for user in recent_users %}
                 <tr>
-                    <td>1</td>
-                    <td>jdoe</td>
-                    <td>jdoe@example.com</td>
-                    <td>Staff</td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        {% if user.is_superuser %} Admin {% elif user.is_staff %} Staff {% else %} User {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
+                {% empty %}
                 <tr>
-                    <td>2</td>
-                    <td>asmith</td>
-                    <td>asmith@example.com</td>
-                    <td>User</td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
+                    <td colspan="5" class="text-center">No recent users found.</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
         <a href="{% url 'users' %}" class="btn btn-dark mt-3">Manage All Users</a>
     </div>
 </div>
 
+
 <!-- System Actions -->
 <div class="d-flex gap-3">
-    <a href="#" class="btn btn-outline-dark">System Settings</a>
-    <a href="#" class="btn btn-outline-success">View Reports</a>
-    <a href="#" class="btn btn-outline-primary">Backup Data</a>
+    <a href="{% url 'system_settings' %}" class="btn btn-outline-dark">System Settings</a>
+    <a href="{% url 'reports_analytics' %}" class="btn btn-outline-success">View Reports</a>
+    <a href="{% url 'backup_data' %}" class="btn btn-outline-primary">
+        <i class="fas fa-download me-2"></i> Backup Data
+    </a>
 </div>
 {% endblock %}

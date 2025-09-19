@@ -117,7 +117,7 @@
         {% for f in food %}
           <option value="{{ f.id }}" data-price="{{ f.price }}"
             {% if f in booking.food.all %}selected{% endif %}>
-            {{ f.name }} - Ksh {{ f.price }}
+            {{ f.name }} - Ksh {{ f.price_per_person }}
           </option>
         {% endfor %}
       </select>
@@ -134,9 +134,9 @@
             <label class="form-label">Tours</label>
             <select name="tours" class="form-select" multiple>
         {% for tour in tours %}
-          <option value="{{ tour.id }}" data-price="{{ tour.price }}"
+          <option value="{{ tour.id }}" data-price="{{ tour.price_per_person }}"
             {% if tour in booking.tours.all %}selected{% endif %}>
-            {{ tour.name }} - Ksh {{ tour.price }}
+            {{ tour.name }} - Ksh {{ tour.price_per_person }}
           </option>
         {% endfor %}
       </select>

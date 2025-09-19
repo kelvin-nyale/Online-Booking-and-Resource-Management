@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 # Replace with your Google OAuth keys
@@ -144,6 +145,16 @@ SOCIALACCOUNT_PROVIDERS = {
         },
     }
 }
+
+
+# M-Pesa Settings
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
+MPESA_SHORTCODE = config('MPESA_SHORTCODE')
+MPESA_PASSKEY = config('MPESA_PASSKEY')
+MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT', default='sandbox')
+CALLBACK_URL = config('CALLBACK_URL')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

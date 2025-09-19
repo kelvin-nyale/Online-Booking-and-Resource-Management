@@ -49,21 +49,21 @@
                     <p class="mb-1"><strong>Rooms:</strong></p>
                     <ul class="small">
                         {% for r in booking.rooms.all %}
-                        <li>{{ r.name }} – Ksh {{ r.price }}</li>
+                        <li>{{ r.name }} – Ksh {{ r.room_type.price_per_night }}</li>
                         {% endfor %}
                     </ul>
                     {% endif %} {% if booking.food.all %}
                     <p class="mb-1"><strong>Food:</strong></p>
                     <ul class="small">
                         {% for f in booking.food.all %}
-                        <li>{{ f.name }} – Ksh {{ f.price }}</li>
+                        <li>{{ f.name }} – Ksh {{ f.price_per_person }}</li>
                         {% endfor %}
                     </ul>
                     {% endif %} {% if booking.tours.all %}
                     <p class="mb-1"><strong>Tours:</strong></p>
                     <ul class="small">
                         {% for t in booking.tours.all %}
-                        <li>{{ t.name }} – Ksh {{ t.price }}</li>
+                        <li>{{ t.name }} – Ksh {{ t.price_per_person }}</li>
                         {% endfor %}
                     </ul>
                     {% endif %}

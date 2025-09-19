@@ -1,0 +1,43 @@
+{% extends 'base.admin.html' %} {% block title %}Edit Tour{% endblock %} {% block content %}
+<div class="container">
+    <h2 class="mb-4">Edit Tour</h2>
+
+    <!-- Add enctype for file upload -->
+    <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" value="{{ tour.name }}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Destination</label>
+            <input type="text" name="destination" value="{{ tour.destination }}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="4" required>{{ tour.description }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Price (per person)</label>
+            <input type="number" name="price_per_person" value="{{ tour.price_per_person }}" class="form-control" step="0.01" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Change Image</label>
+            <input type="file" name="image" class="form-control"> {% if tour.image %}
+            <div class="mt-2">
+                <p>Current Image:</p>
+                <img src="{{ tour.image.url }}" alt="Tour Image" class="img-thumbnail" style="max-width: 200px;">
+            </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'tours' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

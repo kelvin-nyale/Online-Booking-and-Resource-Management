@@ -31,7 +31,7 @@
         </div>
         {% endif %}
 
-        <!-- Dates & Guests -->
+        <!-- Dates -->
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Check-in</label>
@@ -45,11 +45,6 @@
             </div>
         </div>
 
-        <!-- <div class="mb-3">
-      <label class="form-label">Guests (Pax)</label>
-      <input type="number" name="guests" class="form-control" value="1" min="1" required>
-    </div> -->
-
         <h5 class="text-secondary mt-4">Optional Add-ons</h5>
 
         <!-- Activities -->
@@ -61,7 +56,7 @@
             <label class="form-label">Activities</label>
             <select name="activities" class="form-select" multiple>
         {% for activity in activities %}
-        <option value="{{ activity.id }}" data-price="{{ activity.price }}">
+        <option value="{{ activity.id }}" data-price="{{ activity.price_per_person }}">
           {{ activity.name }} - Ksh {{ activity.price_per_person }}
         </option>
         {% endfor %}
@@ -88,7 +83,7 @@
             <input type="number" name="packages_pax" class="form-control" min="1" value="1">
         </div>
 
-        <!-- Rooms (CHECKBOX VERSION) -->
+        <!-- Rooms -->
         <div class="form-check mb-2">
             <input class="form-check-input toggle-section" type="checkbox" data-target="#rooms-section">
             <label class="form-check-label">Include Rooms</label>
@@ -97,7 +92,7 @@
             <label class="form-label">Rooms</label>
             <select name="rooms" class="form-select" multiple>
         {% for room in rooms %}
-        <option value="{{ room.id }}" data-price="{{ room.price_per_night }}">
+        <option value="{{ room.id }}" data-price="{{ room.room_type.price_per_night }}">
           {{ room.name }} - {{ room.room_type.name }} - Ksh {{ room.room_type.price_per_night }}
         </option>
         {% endfor %}
@@ -116,7 +111,7 @@
             <select name="food" class="form-select" multiple>
         {% for f in food %}
         <option value="{{ f.id }}" data-price="{{ f.price }}">
-          {{ f.name }} - Ksh {{ f.price }}
+          {{ f.name }} - Ksh {{ f.price_per_person }}
         </option>
         {% endfor %}
       </select>
@@ -133,8 +128,8 @@
             <label class="form-label">Tours</label>
             <select name="tours" class="form-select" multiple>
         {% for tour in tours %}
-        <option value="{{ tour.id }}" data-price="{{ tour.price }}">
-          {{ tour.name }} - Ksh {{ tour.price }}
+        <option value="{{ tour.id }}" data-price="{{ tour.price_per_person }}">
+          {{ tour.name }} - Ksh {{ tour.price_per_person }}
         </option>
         {% endfor %}
       </select>
@@ -149,77 +144,87 @@
         </div>
 
         <button type="submit" class="btn btn-success w-100 mt-3">Create Booking</button>
-
         <a href="{% url 'booking_list' %}" class="btn btn-danger w-100 mt-3">Cancel Booking</a>
     </form>
 </div>
 
 <script>
-    document.querySelectorAll('.toggle-section').forEach(cb => {
-        cb.addEventListener('change', () => {
-            const target = document.querySelector(cb.dataset.target);
-            cb.checked ? target.classList.remove('d-none') : target.classList.add('d-none');
-            updateTotal();
+    document.addEventListener("DOMContentLoaded", () => {
+        const totalAmountDisplay = document.getElementById('total-amount');
+
+        const getSelectedOptions = (selector) => {
+            const select = document.querySelector(selector);
+            return select ? Array.from(select.selectedOptions) : [];
+        };
+
+        function updateTotal() {
+            let total = 0;
+
+            if (!document.getElementById('activities-section').classList.contains('d-none')) {
+                const pax = parseInt(document.querySelector('[name="activities_pax"]').value) || 1;
+                getSelectedOptions('[name="activities"]').forEach(opt => {
+                    total += parseFloat(opt.dataset.price) * pax;
+                });
+            }
+
+            if (!document.getElementById('packages-section').classList.contains('d-none')) {
+                const pax = parseInt(document.querySelector('[name="packages_pax"]').value) || 1;
+                getSelectedOptions('[name="packages"]').forEach(opt => {
+                    total += parseFloat(opt.dataset.price) * pax;
+                });
+            }
+
+            if (!document.getElementById('rooms-section').classList.contains('d-none')) {
+                const pax = parseInt(document.querySelector('[name="rooms_pax"]').value) || 1;
+                getSelectedOptions('[name="rooms"]').forEach(opt => {
+                    total += parseFloat(opt.dataset.price) * pax;
+                });
+            }
+
+            if (!document.getElementById('food-section').classList.contains('d-none')) {
+                const pax = parseInt(document.querySelector('[name="food_pax"]').value) || 1;
+                getSelectedOptions('[name="food"]').forEach(opt => {
+                    total += parseFloat(opt.dataset.price) * pax;
+                });
+            }
+
+            if (!document.getElementById('tours-section').classList.contains('d-none')) {
+                const pax = parseInt(document.querySelector('[name="tours_pax"]').value) || 1;
+                getSelectedOptions('[name="tours"]').forEach(opt => {
+                    total += parseFloat(opt.dataset.price) * pax;
+                });
+            }
+
+            totalAmountDisplay.textContent = `Ksh ${total.toLocaleString()}`;
+        }
+
+        document.querySelectorAll('.toggle-section').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const target = document.querySelector(cb.dataset.target);
+                cb.checked ? target.classList.remove('d-none') : target.classList.add('d-none');
+                updateTotal();
+            });
         });
+
+        document.querySelectorAll('select, input').forEach(el => {
+            el.addEventListener('input', updateTotal);
+        });
+
+        updateTotal();
+
+        // Bootstrap validation
+        (() => {
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
     });
-
-    const totalAmountDisplay = document.getElementById('total-amount');
-    const getSelectedOptions = (selector) => {
-        const select = document.querySelector(selector);
-        return select ? Array.from(select.selectedOptions) : [];
-    };
-
-    function updateTotal() {
-        const guests = parseInt(document.querySelector('[name="guests"]').value) || 1;
-        let total = 0;
-
-        // Activities
-        if (!document.getElementById('activities-section').classList.contains('d-none')) {
-            const pax = parseInt(document.querySelector('[name="activities_pax"]').value) || 1;
-            getSelectedOptions('[name="activities"]').forEach(opt => {
-                total += parseFloat(opt.dataset.price) * pax;
-            });
-        }
-
-        // Packages
-        if (!document.getElementById('packages-section').classList.contains('d-none')) {
-            const pax = parseInt(document.querySelector('[name="packages_pax"]').value) || 1;
-            getSelectedOptions('[name="packages"]').forEach(opt => {
-                total += parseFloat(opt.dataset.price) * pax;
-            });
-        }
-
-        // Rooms (checkboxes)
-        if (!document.getElementById('rooms-section').classList.contains('d-none')) {
-            const pax = parseInt(document.querySelector('[name="rooms_pax"]').value) || 1;
-            document.querySelectorAll('.room-checkbox:checked').forEach(cb => {
-                total += parseFloat(cb.dataset.price) * pax * guests;
-            });
-        }
-
-        // Food
-        if (!document.getElementById('food-section').classList.contains('d-none')) {
-            const pax = parseInt(document.querySelector('[name="food_pax"]').value) || 1;
-            getSelectedOptions('[name="food"]').forEach(opt => {
-                total += parseFloat(opt.dataset.price) * pax;
-            });
-        }
-
-        // Tours
-        if (!document.getElementById('tours-section').classList.contains('d-none')) {
-            const pax = parseInt(document.querySelector('[name="tours_pax"]').value) || 1;
-            getSelectedOptions('[name="tours"]').forEach(opt => {
-                total += parseFloat(opt.dataset.price) * pax;
-            });
-        }
-
-        totalAmountDisplay.textContent = `Ksh ${total.toLocaleString()}`;
-    }
-
-    document.querySelectorAll('select, input').forEach(el => {
-        el.addEventListener('input', updateTotal);
-    });
-
-    updateTotal();
 </script>
 {% endblock %}

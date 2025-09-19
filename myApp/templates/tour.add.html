@@ -1,0 +1,34 @@
+{% extends 'base.admin.html' %} {% block title %}{{ title }}{% endblock %} {% block content %}
+<h2 class="mb-4">{{ title }}</h2>
+
+<form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Tour Name</label>
+        <input type="text" id="id_name" name="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="id_destination" class="form-label">Destination</label>
+        <input type="text" id="id_destination" name="destination" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="id_description" class="form-label">Description</label>
+        <textarea id="id_description" name="description" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label for="id_price_per_person" class="form-label">Price (per person)</label>
+        <input type="number" id="id_price_per_person" name="price_per_person" class="form-control" required>
+    </div>
+    <!-- Image Upload -->
+    <div class="mb-3">
+        <label for="id_image" class="form-label">Upload Image</label>
+        <input type="file" id="id_image" name="image" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Save</button>
+</form>
+
+<a href="{% url 'tours' %}" class="btn btn-secondary mt-3">Back to Tours</a> {% endblock %}

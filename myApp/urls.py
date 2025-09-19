@@ -30,6 +30,11 @@ urlpatterns = [
     path('packages/edit/<int:pk>/', views.edit_package, name='edit_package'),
     path('packages/delete/<int:pk>/', views.delete_package, name='delete_package'),
     
+    path('tours/', views.tours, name='tours'),
+    path('tours/add/', views.add_tour, name='add_tour'),
+    path('tour/edit/<int:pk>/', views.edit_tour, name='edit_tour'),
+    path('tour/deelete/<int:pk>/', views.delete_tour, name='delete_tour'),
+    
     path('rooms/', views.list_rooms, name='list_rooms'),
     path('rooms/add/', views.add_room, name='add_room'),
     path('rooms/<int:room_id>/edit/', views.edit_room, name='edit_room'),
@@ -40,6 +45,11 @@ urlpatterns = [
     path('room-type/add/', views.add_room_type, name='add_room_type'),
     path('room-type/edit/<int:pk>/', views.edit_room_type, name='edit_room_type'),
     path('room-type/delete/<int:pk>/', views.delete_room_type, name='delete_room_type'),
+    
+    path('food-list/', views.food_list, name='food_list'),
+    path('food/add/', views.add_food, name='add_food'),
+    path('food/edit/<int:pk>/', views.edit_food, name='edit_food'),
+    path('food/delete/<int:pk>/', views.delete_food, name='delete_food'),
     
     # Bookings
     path('bookings/', views.booking_list, name='booking_list'),
@@ -52,5 +62,8 @@ urlpatterns = [
     
     path('explore/', views.explore, name='explore'),
     path('reports/', views.reports_analytics, name='reports_analytics'),
+    
+    path('backup/', views.backup_data, name='backup_data'),
+    path("system-settings/", views.system_settings, name="system_settings"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

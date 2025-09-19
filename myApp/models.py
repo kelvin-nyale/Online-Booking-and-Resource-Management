@@ -99,7 +99,7 @@ class RoomBooking(models.Model):
 
 class Food(models.Model):
     name = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_person = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return self.name
@@ -107,29 +107,95 @@ class Food(models.Model):
 
 class Tour(models.Model):
     name = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100, null=True)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_person = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(upload_to='room_images/', blank=True, null=True)  
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.destination}"
 
+
+# class Booking(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+#     customer_name = models.CharField(max_length=100, blank=True, null=True)
+#     customer_email = models.EmailField(blank=True, null=True)
+
+#     activities = models.ManyToManyField(Activity, blank=True)
+#     packages = models.ManyToManyField(Package, blank=True)
+#     rooms = models.ManyToManyField(Room, blank=True)
+#     food = models.ManyToManyField(Food, blank=True)
+#     tours = models.ManyToManyField(Tour, blank=True)
+
+#     check_in = models.DateField(blank=True, null=True)
+#     check_out = models.DateField(blank=True, null=True)
+#     pax = models.PositiveIntegerField(default=1)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     paid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+#     @property
+#     def nights_spent(self):
+#         if self.check_in and self.check_out:
+#             nights = (self.check_out - self.check_in).days
+#             return nights if nights > 0 else 1  # Minimum of 1 night for same-day bookings
+#         return 1
+
+#     @property
+#     def amount_required(self):
+#         """
+#         Dynamically calculate total cost:
+#         - Rooms: price × pax × nights
+#         - Activities/Packages/Food/Tours: price × pax
+#         """
+#         pax = self.pax or 1
+
+#         # Rooms: price × guests × nights
+#         room_cost = sum(room.room_type.price_per_night * pax * self.nights_spent for room in self.rooms.all())
+
+#         # Activities, Packages, Food, Tours: price × guests
+#         activity_cost = sum(a.price_per_person * pax for a in self.activities.all())
+#         package_cost = sum(p.price_per_person * pax for p in self.packages.all())
+#         food_cost = sum(f.price_per_person * pax for f in self.food.all())
+#         tour_cost = sum(t.price_per_person * pax for t in self.tours.all())
+
+#         return room_cost + activity_cost + package_cost + food_cost + tour_cost
+
+#     @property
+#     def balance(self):
+#         return self.amount_required - self.paid
+    
+#     @property
+#     def display_customer(self):
+#         if self.customer_name:
+#             return self.customer_name
+#         if self.user:
+#             return self.user.username
+#         return "Anonymous"
+
+
+#     def __str__(self):
+#         return f"Booking #{self.id} - {self.customer_name or self.user.username} - {self.check_in} - {self.amount_required} - {self.pax}"
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     customer_name = models.CharField(max_length=100, blank=True, null=True)
     customer_email = models.EmailField(blank=True, null=True)
 
-    activities = models.ManyToManyField(Activity, blank=True)
-    packages = models.ManyToManyField(Package, blank=True)
-    rooms = models.ManyToManyField(Room, blank=True)
-    food = models.ManyToManyField(Food, blank=True)
-    tours = models.ManyToManyField(Tour, blank=True)
+    activities = models.ManyToManyField('Activity', blank=True)
+    packages = models.ManyToManyField('Package', blank=True)
+    rooms = models.ManyToManyField('Room', blank=True)
+    food = models.ManyToManyField('Food', blank=True)
+    tours = models.ManyToManyField('Tour', blank=True)
 
     check_in = models.DateField(blank=True, null=True)
     check_out = models.DateField(blank=True, null=True)
-    guests = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
+    pax = models.PositiveIntegerField(default=1)
 
+    # New field to store pax details for each selection
+    pax_details = models.JSONField(blank=True, null=True)  # Works with Django 3.1+
+
+    created_at = models.DateTimeField(auto_now_add=True)
     paid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     @property
@@ -146,23 +212,37 @@ class Booking(models.Model):
         - Rooms: price × pax × nights
         - Activities/Packages/Food/Tours: price × pax
         """
-        pax = self.guests or 1
+        pax = self.pax or 1
 
-        # Rooms: price × guests × nights
-        room_cost = sum(room.room_type.price_per_night * pax * self.nights_spent for room in self.rooms.all())
+        # Use pax_details if available for more accurate pricing
+        def get_pax_value(category):
+            if self.pax_details and category in self.pax_details:
+                return self.pax_details[category].get('pax', pax)
+            return pax
 
-        # Activities, Packages, Food, Tours: price × guests
-        activity_cost = sum(a.price_per_person * pax for a in self.activities.all())
-        package_cost = sum(p.price_per_person * pax for p in self.packages.all())
-        food_cost = sum(f.price_per_person * pax for f in self.food.all())
-        tour_cost = sum(t.price_per_person * pax for t in self.tours.all())
+        room_cost = sum(
+            room.room_type.price_per_night * get_pax_value('rooms') * self.nights_spent
+            for room in self.rooms.all()
+        )
+        activity_cost = sum(
+            a.price_per_person * get_pax_value('activities') for a in self.activities.all()
+        )
+        package_cost = sum(
+            p.price_per_person * get_pax_value('packages') for p in self.packages.all()
+        )
+        food_cost = sum(
+            f.price_per_person * get_pax_value('food') for f in self.food.all()
+        )
+        tour_cost = sum(
+            t.price_per_person * get_pax_value('tours') for t in self.tours.all()
+        )
 
         return room_cost + activity_cost + package_cost + food_cost + tour_cost
 
     @property
     def balance(self):
         return self.amount_required - self.paid
-    
+
     @property
     def display_customer(self):
         if self.customer_name:
@@ -171,10 +251,9 @@ class Booking(models.Model):
             return self.user.username
         return "Anonymous"
 
-
     def __str__(self):
-        return f"Booking #{self.id} - {self.customer_name or self.user.username} - {self.check_in} - {self.amount_required}"
-    
+        return f"Booking #{self.id} - {self.display_customer} - {self.check_in} - {self.amount_required} - {self.pax}"
+
 class Notification(models.Model):
     NOTIFICATION_TYPES = [
         ('booking', 'Booking'),
@@ -188,3 +267,16 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.message} ({'Read' if self.is_read else 'Unread'})"
+
+
+class SystemSetting(models.Model):
+    site_name = models.CharField(max_length=100, default="Epic Trail Adventure Park")
+    support_email = models.EmailField(default="support@example.com")
+    maintenance_mode = models.BooleanField(default=False)
+    enable_mpesa = models.BooleanField(default=True)  # Toggle M-Pesa payments
+    enable_stripe = models.BooleanField(default=False)  # Toggle Stripe payments
+    max_daily_bookings = models.PositiveIntegerField(default=100)  # Limit per day
+    discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Global discount %
+
+    def __str__(self):
+        return "System Settings"
