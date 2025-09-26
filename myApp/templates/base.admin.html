@@ -85,7 +85,7 @@
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Welcome Back <strong>{{ user.username }}!</strong></a>
+            <a class="navbar-brand" href="#"><strong>EpicTrail Adventures</strong></a>
 
             <div class="d-flex">
                 <a class="navbar-brand" href="#"> Created on: <strong>{{ user.date_joined }}</strong></a>
@@ -108,12 +108,11 @@
         <a href="{% url 'list_rooms' %}"><i class="fas fa-bed me-2"></i> Manage Rooms</a>
         <!-- <a href="{% url 'room_types' %}"><i class="fas fa-plus-circle me-2"></i> Manage Room Types</a> -->
         <a href="{% url 'food_list' %}"><i class="fas fa-utensils me-2"></i> Manage Food</a>
+        <a href="{% url 'manage_orders' %}"><i class="fas fa-tasks me-2"></i> Manage Orders</a>
         <a href="{% url 'tours' %}"><i class="fas fa-route me-2"></i> Manage Tours</a>
         <a href="{% url 'booking_list' %}"><i class="fas fa-calendar-check me-2"></i> Manage Bookings</a>
-        <a href="{% url 'reports_analytics' %}">
-            <i class="fas fa-chart-line me-2"></i> Reports & Analytics
-        </a>
-
+        <a href="{% url 'duties' %}"><i class="fas fa-clipboard-list me-2"></i> Manage Duties</a>
+        <a href="{% url 'reports_analytics' %}"><i class="fas fa-chart-line me-2"></i> Reports & Analytics</a>
         <a href="{% url 'notifications' %}"><i class="fas fa-bell me-2"></i> Notifications</a>
         <a href="{% url 'system_settings' %}"><i class="fas fa-cogs me-2"></i> Settings</a>
         <a href="#"><i class="fas fa-question-circle me-2"></i> Help</a>

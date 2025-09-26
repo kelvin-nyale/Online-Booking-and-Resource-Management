@@ -1,0 +1,32 @@
+{% extends "base.user.html" %} {% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Place Food Order</h2>
+
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="food" class="form-label">Select Food</label>
+            <select name="food" id="food" class="form-select" required>
+                <option value="">-- Select Food Item --</option>
+                {% for item in foods %}
+                <option value="{{ item.id }}">
+                    {{ item.name }} - {{ item.price_per_person }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+        </div>
+        <div class="mb-3">
+            <label for="check_in" class="form-label">Order Date</label>
+            <input type="date" name="check_in" id="check_in" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Place Order</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.staff.html" %} {% block title %}My Duties{% endblock %} {% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Assigned Duties</h2>
+
+    {% if duties %}
+    <table class="table table-striped shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for duty in duties %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ duty.title }}</td>
+                <td>{{ duty.description }}</td>
+                <td>{{ duty.due_date|date:"M d, Y" }}</td>
+                <td>
+                    {% if duty.completed %}
+                    <span class="badge bg-success">Completed</span> {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span> {% endif %}
+                </td>
+                <td>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="duty_id" value="{{ duty.id }}">
+                        <button type="submit" class="btn btn-sm {% if duty.completed %}btn-secondary{% else %}btn-primary{% endif %}">
+                {% if duty.completed %}Mark Pending{% else %}Mark Completed{% endif %}
+              </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">You have no assigned duties at the moment.</div>
+    {% endif %}
+</div>
+{% endblock %}

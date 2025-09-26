@@ -1,0 +1,54 @@
+{% extends "base.admin.html" %} {% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Food Orders</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Food</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Check_In</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ order.user.username }}</td>
+                <td>{{ order.food.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.total_price }}</td>
+                <td>
+                    {% if order.status == "Pending" %}
+                    <span class="badge bg-warning">Pending</span> {% elif order.status == "Approved" %}
+                    <span class="badge bg-info">Approved</span> {% elif order.status == "Completed" %}
+                    <span class="badge bg-success">Completed</span> {% else %}
+                    <span class="badge bg-danger">Cancelled</span> {% endif %}
+                </td>
+                <td>{{ order.check_in|date:"M d, Y" }}</td>
+                <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <button class="btn btn-sm btn-primary" name="action" value="approve">Approve</button>
+                        <button class="btn btn-sm btn-success" name="action" value="completed">Complete</button>
+                        <button class="btn btn-sm btn-danger" name="action" value="cancel">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

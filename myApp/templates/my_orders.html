@@ -1,0 +1,46 @@
+{% extends 'base.user.html' %} {% block title %}My Orders{% endblock %} {% block content %}
+<h2 class="mb-4">My Orders</h2>
+<a href="{% url 'place_order' %}" class="btn btn-outline-primary mb-2">Place New Order</a>
+<!-- <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Food</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.food.name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.status|title }}</td>
+            <td>
+                <a href="{% url 'update_order' order.id %}" class="btn btn-sm btn-warning">Update</a>
+                <a href="{% url 'cancel_order' order.id %}" class="btn btn-sm btn-danger">Cancel</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">You have no orders yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table> -->
+{% for order in orders %}
+<div class="card p-4 mb-3">
+    <p>Food: <strong>{{ order.food.name }}</strong></p>
+    <p>Qty: <strong>{{ order.quantity }}</strong></p>
+    <p>Price: <strong>{{ order.total_price }}</strong></p>
+    <p>Check_In: <strong>{{ order.check_in|date:"M d, Y" }}</strong></p>
+    <p>Status: <strong>{{ order.status|title }}</strong></p>
+    <p>
+        <a href="{% url 'update_order' order.id %}" class="btn btn-sm btn-warning">Update</a>
+        <a href="{% url 'cancel_order' order.id %}" class="btn btn-sm btn-danger">Cancel</a>
+    </p>
+
+</div>
+{% empty %}
+<p>You have no orders yet. Click <a href="{% url 'place_order' %}">Place Order</a> to Place one</p>
+{% endfor %} {% endblock %}

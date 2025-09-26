@@ -40,6 +40,42 @@
         </div>
     </div>
 
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <i class="fas fa-book fa-2x text-primary mb-2"></i>
+                <h6>Total Bookings</h6>
+                <p class="fs-5 fw-bold">{{ total_bookings }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <i class="fas fa-coins fa-2x text-success mb-2"></i>
+                <h6>Total Revenue - Bookings</h6>
+                <p class="fs-5 fw-bold">KSh {{ total_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <i class="fas fa-utensils fa-2x text-warning mb-2"></i>
+                <h6>Food Orders</h6>
+                <p class="fs-5 fw-bold">{{ total_orders }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm text-center">
+                <i class="fas fa-cash-register fa-2x text-danger mb-2"></i>
+                <h6>Food Orders Revenue</h6>
+                <p class="fs-5 fw-bold">KSh {{ total_order_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
     <!-- Bookings & Revenue Overview -->
     <div class="row mb-4">
         <div class="col-lg-8 mb-4">
@@ -50,12 +86,12 @@
         </div>
         <div class="col-lg-4 mb-4">
             <div class="card shadow-sm p-3">
-                <h5 class="text-center mb-3">Bookings Distribution</h5>
+                <h5 class="text-center mb-3">Revenue Distribution</h5>
                 <canvas id="pieChart" height="300"></canvas>
             </div>
         </div>
     </div>
-
+    <hr>
     <!-- Top Lists -->
     <h4>Top Activities</h4>
     <ul class="list-group mb-3">
@@ -102,6 +138,7 @@
     </ul>
 </div>
 
+<!-- JSON data for charts -->
 {{ months|json_script:"months-data" }} {{ monthly_bookings|json_script:"bookings-data" }} {{ monthly_revenue|json_script:"revenue-data" }} {{ pie_labels|json_script:"pie-labels" }} {{ pie_data|json_script:"pie-data" }}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -142,9 +179,7 @@
                     text: 'Monthly Bookings & Revenue'
                 },
                 tooltip: {
-                    enabled: true,
                     callbacks: {
-                        // Format tooltip labels for both datasets
                         label: function(context) {
                             if (context.dataset.label === 'Revenue (KSh)') {
                                 return `${context.dataset.label}: KSh ${context.parsed.y.toLocaleString()}`;
@@ -170,7 +205,7 @@
             labels: pieLabels,
             datasets: [{
                 data: pieData,
-                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF']
             }]
         },
         options: {
@@ -178,7 +213,7 @@
             plugins: {
                 title: {
                     display: true,
-                    text: 'Bookings Distribution by Category'
+                    text: 'Revenue Distribution by Category'
                 },
                 tooltip: {
                     callbacks: {
@@ -191,5 +226,4 @@
         }
     });
 </script>
-
 {% endblock %}

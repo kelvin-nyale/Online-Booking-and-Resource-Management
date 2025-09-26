@@ -65,7 +65,7 @@ class RoomType(models.Model):
         return self.total_rooms - booked
 
     def __str__(self):
-        return f"{self.name} ({self.available_rooms()} available)"
+        return f"{self.name} - {self.capacity} - {self.price_per_night}" #({self.available_rooms()} available)
     
 class Room(models.Model):
     name = models.CharField(max_length=100)
@@ -250,6 +250,10 @@ class Booking(models.Model):
         if self.user:
             return self.user.username
         return "Anonymous"
+    
+    @property
+    def is_upcoming(self):
+        return self.date >= timezone.now()
 
     def __str__(self):
         return f"Booking #{self.id} - {self.display_customer} - {self.check_in} - {self.amount_required} - {self.pax}"
@@ -270,8 +274,8 @@ class Notification(models.Model):
 
 
 class SystemSetting(models.Model):
-    site_name = models.CharField(max_length=100, default="Epic Trail Adventure Park")
-    support_email = models.EmailField(default="support@example.com")
+    site_name = models.CharField(max_length=100, default="EpicTrail Adventures")
+    support_email = models.EmailField(default="support@epictrail.co.ke")
     maintenance_mode = models.BooleanField(default=False)
     enable_mpesa = models.BooleanField(default=True)  # Toggle M-Pesa payments
     enable_stripe = models.BooleanField(default=False)  # Toggle Stripe payments
@@ -280,3 +284,35 @@ class SystemSetting(models.Model):
 
     def __str__(self):
         return "System Settings"
+
+class FoodOrder(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_orders')
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    check_in = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def total_price(self):
+        return self.food.price_per_person * self.quantity
+
+    def __str__(self):
+        return f"{self.food.name} x{self.quantity} by {self.user.username}"
+
+class Duty(models.Model):
+    staff = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'is_staff': True})
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    due_date = models.DateField()
+    assigned_on = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.title} → {self.staff.username}"

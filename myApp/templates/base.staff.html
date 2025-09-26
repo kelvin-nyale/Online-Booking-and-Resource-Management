@@ -85,7 +85,7 @@
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Welcome Back <strong>{{ user.username }}!</strong></a>
+            <a class="navbar-brand" href="#"><strong>EpicTrail Adventures</strong></a>
 
             <div class="d-flex">
                 <a class="navbar-brand" href="#"> Created on: <strong>{{ user.date_joined }}</strong></a>
@@ -102,11 +102,12 @@
 
         <!-- Sidebar Menu -->
         <a href="{% url 'staff_dashboard' %}"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
-        <a href="{% url 'activity_list' %}"><i class="fas fa-biking me-2"></i> View Activities</a>
+        <!-- <a href="{% url 'activity_list' %}"><i class="fas fa-biking me-2"></i> View Activities</a>
         <a href="{% url 'list_packages' %}"><i class="fas fa-box-open me-2"></i> View Packages</a>
         <a href="{% url 'list_rooms' %}"><i class="fas fa-bed me-2"></i> View Rooms</a>
         <a href="#"><i class="fas fa-utensils me-2"></i> View Food</a>
-        <a href="#"><i class="fas fa-route me-2"></i> View Tours</a>
+        <a href="#"><i class="fas fa-route me-2"></i> View Tours</a> -->
+        <a href="{% url 'staff_duties' %}"><i class="fas fa-users me-2"></i> Manage Duties</a>
         <!-- <a href="#"><i class="fas fa-calendar-check me-2"></i> Manage Bookings</a> -->
         <a href="{% url 'booking_list' %}"><i class="fas fa-calendar-check me-2"></i> All Bookings</a>
         <a href="#"><i class="fas fa-chart-line me-2"></i> Reports</a>

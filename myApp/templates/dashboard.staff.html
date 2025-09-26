@@ -1,4 +1,4 @@
-{% extends 'base.staff.html' %} {% block title %}Staff Dashboard{% endblock %} {% block content %}
+{% extends 'base.staff.html' %} {% block title %}EpicTrail Adventures - Staff Dashboard{% endblock %} {% block content %}
 <h1 class="mb-4">Welcome, <strong>{{user.username}}</strong>!</h1>
 
 <!-- Stats -->
@@ -6,8 +6,11 @@
     <div class="col-md-4">
         <div class="card shadow-sm">
             <div class="card-body text-center">
-                <h5>Upcoming Events</h5>
-                <h2>8</h2>
+                <h5>Upcoming Bookings</h5>
+                <h2>{{ upcoming_bookings_count }}</h2>
+                <a href="{% url 'upcoming_bookings' %}" class="btn btn-primary btn-sm mt-2">
+                View Details
+            </a>
             </div>
         </div>
     </div>
@@ -23,7 +26,7 @@
         <div class="card shadow-sm">
             <div class="card-body text-center">
                 <h5>Assigned Resources</h5>
-                <h2>5</h2>
+                <h2>{{ assigned_count }}</h2>
             </div>
         </div>
     </div>

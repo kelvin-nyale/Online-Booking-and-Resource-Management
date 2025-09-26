@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Package, Booking, Room, Food, Tour, RoomType, RoomBooking, Notification
+from .models import Activity, Package, Booking, Room, Food, Tour, RoomType, RoomBooking, Notification, Duty, FoodOrder
 
 # Register your models here.
 admin.site.register(Activity),
@@ -11,3 +11,5 @@ admin.site.register(Tour),
 admin.site.register(RoomType),
 admin.site.register(RoomBooking),
 admin.site.register(Notification),
+admin.site.register(Duty),
+admin.site.register(FoodOrder)

@@ -1,0 +1,38 @@
+{% extends "base.admin.html" %} {% block title %}Duties{% endblock %} {% block content %}
+<a href="{% url 'assign_duty' %}" class="btn btn-outline-primary mb-3">Assign New Duty</a>
+<div class="card p-4 shadow-sm">
+    <!-- <a href="{% url 'assign_duty' %}" class="btn btn-primary mb-3">Assign New Duty</a> -->
+    <h4 class="text-secondary mb-3">Assigned Duties</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Staff</th>
+                <th>Title</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for duty in duties %}
+            <tr>
+                <td>{{ duty.staff.username }}</td>
+                <td>{{ duty.title }}</td>
+                <td>{{ duty.due_date }}</td>
+                <td>
+                    {% if duty.completed %}
+                    <span class="badge bg-success">Completed</span> {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span> {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'update_duty_status' duty.id %}" class="btn btn-sm btn-outline-primary">Update</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No duties assigned yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

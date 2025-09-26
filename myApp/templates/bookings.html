@@ -1,9 +1,14 @@
 {% extends base_template %} {% block title %}Bookings - EpicTrail Adventures{% endblock %} {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="text-primary">All Bookings</h2>
-    <a href="{% url 'create_booking' %}" class="btn btn-success">
-        <i class="fas fa-plus-circle"></i> New Booking
-    </a>
+    <div class="btn-group" role="group" aria-label="Actions">
+        <a href="{% url 'create_booking' %}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> New Booking
+        </a>
+        <a href="{% url 'create_user_booking' %}" class="btn btn-primary ms-2">
+            <i class="fas fa-plus-circle"></i> Create New User Booking
+        </a>
+    </div>
 </div>
 
 {% if bookings %}
@@ -36,7 +41,7 @@
                     {% if booking.activities.all %}
                     <strong>Activities:</strong> {{ booking.activities.all|join:", " }}<br> {% endif %} {% if booking.packages.all %}
                     <strong>Packages:</strong> {{ booking.packages.all|join:", " }}<br> {% endif %} {% if booking.rooms.all %}
-                    <strong>Rooms:</strong> {{ booking.rooms.all|join:", " }}<br> {% endif %} {% if booking.food.all %}
+                    <strong>Accommodation:</strong> {{ booking.rooms.all|join:", " }}<br> {% endif %} {% if booking.food.all %}
                     <strong>Food:</strong> {{ booking.food.all|join:", " }}<br> {% endif %} {% if booking.tours.all %}
                     <strong>Tours:</strong> {{ booking.tours.all|join:", " }} {% endif %}
                 </td>

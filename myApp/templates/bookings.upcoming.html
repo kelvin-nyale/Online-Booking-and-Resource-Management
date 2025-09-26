@@ -1,0 +1,31 @@
+{% extends 'base.staff.html' %} {% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Upcoming Bookings</h2>
+    {% if upcoming_bookings %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Guests</th>
+                <th>Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in upcoming_bookings %}
+            <tr>
+                <td>{{ booking.user.username }}</td>
+                <td>{{ booking.check_in|date:"Y-m-d" }}</td>
+                <td>{{ booking.check_out|date:"Y-m-d" }}</td>
+                <td>{{ booking.pax }}</td>
+                <td>{% if booking.paid %}✔{% else %}✘{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No upcoming bookings.</p>
+    {% endif %}
+</div>
+{% endblock %}

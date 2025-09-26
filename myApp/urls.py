@@ -56,12 +56,28 @@ urlpatterns = [
     path('bookings/edit/<int:pk>/', views.edit_booking, name='edit_booking'),
     path('bookings/delete/<int:pk>/', views.delete_booking, name='delete_booking'),
     path('bookings/new/', views.create_booking, name='create_booking'),
+    path('bookings/new/for-user/', views.admin_create_booking, name='create_user_booking'),  # booking on behalf of user
+    
+    path('menu/', views.food_menu, name='food_menu'),
+    path('order/place/', views.place_order, name='place_order'),
+    path('my-orders/', views.my_orders, name='my_orders'),
+    path('update-order/<int:order_id>/', views.update_order, name='update_order'),
+    path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
+    path('manage-orders/', views.manage_orders, name='manage_orders'),
+    path('update-order-status/<int:order_id>/', views.update_order_status, name='update_order_status'),
     
     path('notifications/', notifications_view, name='notifications'),
     path('notifications/<int:pk>/read/', mark_notification_read, name='mark_notification_read'),
     
     path('explore/', views.explore, name='explore'),
     path('reports/', views.reports_analytics, name='reports_analytics'),
+    
+    path('duties/assign/', views.assign_duty, name='assign_duty'),
+    path('duties/', views.duties, name='duties'),
+    path('duty/<int:duty_id>/update/', views.update_duty_status, name='update_duty_status'),
+    path('duties/staff/', views.staff_duties, name='staff_duties'),
+    
+    path('upcoming-bookings/', views.upcoming_bookings_list, name='upcoming_bookings'),
     
     path('backup/', views.backup_data, name='backup_data'),
     path("system-settings/", views.system_settings, name="system_settings"),

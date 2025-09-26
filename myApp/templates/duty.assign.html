@@ -1,0 +1,64 @@
+{% extends "base.admin.html" %} {% block title %}Assign Duty{% endblock %} {% block content %}
+<div class="card p-4 shadow-sm">
+    <h2 class="text-primary mb-4">Assign Duty to Staff</h2>
+    <form method="POST" class="mb-5">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Select Staff</label>
+            <select name="staff" class="form-select" required>
+        <option value="">-- Choose Staff Member --</option>
+        {% for member in staff_members %}
+        <option value="{{ member.id }}">{{ member.username }} ({{ member.email }})</option>
+        {% endfor %}
+      </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Duty Title</label>
+            <input type="text" name="title" class="form-control" placeholder="Enter duty title" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" placeholder="Optional details"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Due Date</label>
+            <input type="date" name="due_date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Assign Duty</button>
+        <a href="{% url 'duties' %}" class="btn btn-secondary mt-3">Cancel</a>
+    </form>
+
+    <!-- <h4 class="text-secondary mb-3">Assigned Duties</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Staff</th>
+                <th>Title</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for duty in duties %}
+            <tr>
+                <td>{{ duty.staff.username }}</td>
+                <td>{{ duty.title }}</td>
+                <td>{{ duty.due_date }}</td>
+                <td>
+                    {% if duty.completed %}
+                    <span class="badge bg-success">Completed</span> {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span> {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'update_duty_status' duty.id %}" class="btn btn-sm btn-outline-primary">Update</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No duties assigned yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> -->
+</div>
+{% endblock %}

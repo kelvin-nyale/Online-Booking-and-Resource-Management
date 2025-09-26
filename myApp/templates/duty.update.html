@@ -1,0 +1,21 @@
+{% extends "base.admin.html" %} {% block title %}Update Duty{% endblock %} {% block content %}
+<div class="card p-4 shadow-sm">
+    <h2 class="mb-3">Update Duty Status</h2>
+    <p><strong>Duty:</strong> {{ duty.title }}</p>
+    <p><strong>Assigned To:</strong> {{ duty.staff.username }}</p>
+    <p><strong>Due Date:</strong> {{ duty.due_date }}</p>
+    <p><strong>Description:</strong> {{ duty.description }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        <p>
+            Current status: {% if duty.completed %}
+            <span class="badge bg-success">Completed</span> {% else %}
+            <span class="badge bg-warning text-dark">Pending</span> {% endif %}
+        </p>
+        <button type="submit" class="btn btn-primary">
+      {% if duty.completed %}Mark as Pending{% else %}Mark as Completed{% endif %}
+    </button>
+        <a href="{% url 'duties' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

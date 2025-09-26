@@ -1,0 +1,86 @@
+{% extends "base.admin.html" %} {% block title %}Create Booking (Admin){% endblock %} {% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-primary">Admin: Select a User to Create a Booking for.</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Select User</label>
+            <select name="user" class="form-select" required>
+        <option value="">-- Choose User --</option>
+        {% for u in users %}
+        <option value="{{ u.id }}">{{ u.username }} ({{ u.email }})</option>
+        {% endfor %}
+      </select>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Check-In</label>
+                <input type="date" name="check_in" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Check-Out</label>
+                <input type="date" name="check_out" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Pax</label>
+            <input type="number" name="pax" class="form-control" value="1" min="1">
+        </div>
+
+        <!-- Rooms -->
+        <div class="mb-3">
+            <label class="form-label">Rooms</label>
+            <select name="rooms" class="form-select" multiple>
+        {% for room in rooms %}
+        <option value="{{ room.id }}">{{ room.name }}</option>
+        {% endfor %}
+      </select>
+        </div>
+
+        <!-- Activities -->
+        <div class="mb-3">
+            <label class="form-label">Activities</label>
+            <select name="activities" class="form-select" multiple>
+        {% for activity in activities %}
+        <option value="{{ activity.id }}">{{ activity.name }}</option>
+        {% endfor %}
+      </select>
+        </div>
+
+        <!-- Packages -->
+        <div class="mb-3">
+            <label class="form-label">Packages</label>
+            <select name="packages" class="form-select" multiple>
+        {% for package in packages %}
+        <option value="{{ package.id }}">{{ package.name }}</option>
+        {% endfor %}
+      </select>
+        </div>
+
+        <!-- Food -->
+        <!-- <div class="mb-3">
+            <label class="form-label">Food</label>
+            <select name="food" class="form-select" multiple>
+        {% for food in food_items %}
+        <option value="{{ food.id }}">{{ food.name }}</option>
+        {% endfor %}
+      </select>
+        </div> -->
+
+        <!-- Tours -->
+        <div class="mb-3">
+            <label class="form-label">Tours</label>
+            <select name="tours" class="form-select" multiple>
+        {% for tour in tours %}
+        <option value="{{ tour.id }}">{{ tour.name }}</option>
+        {% endfor %}
+      </select>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-3">Create Booking</button>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary w-100 mt-3">Cancel</a>
+    </form>
+</div>
+{% endblock %}
